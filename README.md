@@ -1,8 +1,8 @@
-<h1>🛒 ShopEase - Full-Stack E-Commerce Website</h1>
+<h1>🛒 Gaming Hardware Store - Full-Stack E-Commerce Website</h1>
 
 <p>
-    ShopEase is a fully functional e-commerce platform built with the <strong>MERN stack</strong> (MongoDB, Express, React, Node.js). 
-    It includes essential e-commerce features like product browsing, filtering, user authentication, order management, and an integrated payment gateway using <strong>Stripe</strong>. 
+    Gaming Hardware Store is a fully functional e-commerce platform built with the <strong>MERN stack</strong> (MongoDB, Express, React, Node.js). 
+    It includes essential e-commerce features like product browsing, filtering, user authentication, order management, and a secure checkout (Cash on Delivery supported). 
     An admin panel is also provided for managing products and orders efficiently.
 </p>
 
@@ -15,7 +15,7 @@
     <li>🏠 <strong>Home Page</strong> – Browse featured and new products.</li>
     <li>🔍 <strong>Product Listing</strong> – View all products with filters for category, price, and more.</li>
     <li>🛒 <strong>Cart Management</strong> – Add, remove, and adjust quantities in the cart.</li>
-    <li>💳 <strong>Secure Checkout</strong> – Make payments using Stripe.</li>
+    <li>💳 <strong>Secure Checkout</strong> – Cash on Delivery supported.</li>
     <li>🗂 <strong>Order History</strong> – View past orders and their status.</li>
     <li>🔐 <strong>User Authentication</strong> – Register, login, and manage profile.</li>
 </ul>
@@ -47,7 +47,7 @@
 
 <h3>Payment Integration:</h3>
 <ul>
-    <li>Stripe Payment Gateway</li>
+    <li>Payment: Cash on Delivery</li>
 </ul>
 
 <h3>Authentication:</h3>
@@ -63,8 +63,8 @@
 <h3>1. Clone the Repository</h3>
 <pre>
 <code>
-git clone https://github.com/adarshupadhyay21/shopease.git
-cd shopease
+git clone https://github.com/adarshupadhyay21/gaminghardwarestore.git
+cd gaminghardwarestore
 </code>
 </pre>
 
@@ -92,7 +92,7 @@ npm install
 <code>
 MONGO_URI=&lt;your-mongodb-uri&gt;
 JWT_SECRET=&lt;your-jwt-secret&gt;
-STRIPE_SECRET_KEY=&lt;your-stripe-secret-key&gt;
+// Stripe removed - no API key required
 </code>
 </pre>
 
@@ -120,7 +120,7 @@ npm start
 <ol>
     <li>Open <a href="http://localhost:3000" target="_blank">http://localhost:3000</a> in your browser.</li>
     <li>Register or log in to explore the platform.</li>
-    <li>Add products to the cart and proceed to checkout using Stripe.</li>
+    <li>Add products to the cart and proceed to checkout (Cash on Delivery supported).</li>
     <li>Admins can access the admin panel at <code>/admin</code>.</li>
 </ol>
 

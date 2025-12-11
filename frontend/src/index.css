@@ -4,6 +4,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Light mode styles */
+body {
+  background-color: white;
+  color: black;
+  scroll-behavior: auto;
+}
+
+/* Dark mode styles */
+:root.dark body {
+  background-color: #121212;
+  color: white;
+}
+
 a.active hr {
   @apply block;
 }
@@ -17,8 +30,14 @@ a.active hr {
   font-style: normal;
 }
 
+/* Restore default scrollbar appearance so normal scrolling is available */
 ::-webkit-scrollbar{
-  @apply hidden
+  width: 12px;
+}
+
+::-webkit-scrollbar-thumb{
+  background-color: rgba(0,0,0,0.3);
+  border-radius: 9999px;
 }
 @media (max-width:640px) {
   a.active{

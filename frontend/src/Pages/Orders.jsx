@@ -63,7 +63,7 @@ const Orders = () => {
                 <div className='flex items-center gap-3 mt-1 text-base text-gray-700'>
                   <p>{item.price}{currency}</p>
                   <p>Quantity: {item.quantity}</p>
-                  <p>Size : {item.size}</p>
+                  {item.size && <p>Size : {item.size}</p>}
                 </div>
                 <p className='mt-1'>
                   Date :{" "}

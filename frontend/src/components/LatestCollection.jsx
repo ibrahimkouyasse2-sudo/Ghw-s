@@ -16,8 +16,8 @@ const LatestCollections = () => {
       <div className='text-center py-8 text-3xl'>
         <Title text1={"LATEST"} text2={"COLLECTIONS"} />
         <p className='w-3/4 m-auto text-xs sm:text-sm md:text-base text-gray-600'>
-          ShopEase Clothes offers the latest trendy and high-quality fashion
-          collections, keeping you stylish for every occasion.
+          Gaming Hardware Store PC Gaming, Composant offers the latest cutting-edge and
+          high-quality gaming components, keeping you equipped for every occasion.
         </p>
       </div>
 

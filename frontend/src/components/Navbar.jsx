@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { assets } from "../assets/assets";
 import { Link, NavLink } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
+import { useTheme } from "./ThemeProvider";
 
 const Navbar = () => {
     const [openModal, setOpenModal] = useState(false);
@@ -13,6 +14,7 @@ const Navbar = () => {
         token,
         navigate,
     } = useContext(ShopContext);
+    const { theme, toggleTheme } = useTheme();
 
     const logout = () => {
         navigate("/login");
@@ -24,7 +26,11 @@ const Navbar = () => {
         <header>
             <nav className='flex items-center justify-between py-5 font-medium'>
                 <Link to='/'>
-                    <img className='w-36' src={assets.logo} alt='logo' />
+                    <img
+                        className={`w-36 ${theme === "dark" ? "filter invert" : ""}`}
+                        src={assets.logo}
+                        alt='logo'
+                    />
                 </Link>
                 <ul className='hidden sm:flex text-sm gap-5 text-gray-700'>
                     <NavLink to='/' className='flex flex-col items-center gap-1'>
@@ -42,10 +48,7 @@ const Navbar = () => {
                         <hr className=' hidden h-0.5 w-3/4 border-none bg-gray-700' />
                     </NavLink>{" "}
 
-                    <NavLink to='/contact' className='flex flex-col items-center gap-1'>
-                        <p>CONTACT</p>
-                        <hr className=' hidden h-0.5 w-3/4 border-none bg-gray-700' />
-                    </NavLink>{" "}
+                    
                 </ul>
 
                 <div className='flex items-center gap-6'>
@@ -65,7 +68,7 @@ const Navbar = () => {
                         />
 
                         {token && (
-                            <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-3 drop-shadow-xl '>
+                            <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-3 drop-shadow-xl z-50'>
                                 <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-50 text-slate-700 rounded'>
                                     <p className='cursor-pointer hover:text-black'>My Profile</p>
                                     <p
@@ -103,6 +106,13 @@ const Navbar = () => {
                         alt='menu icon'
                     />
                 </div>
+
+                <button
+                    onClick={toggleTheme}
+                    className='ml-4 px-4 py-2 bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-full'
+                >
+                    {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                </button>
 
                 {/* --------navbar sidebar for mobile screen----- */}
 
@@ -144,13 +154,7 @@ const Navbar = () => {
                         >
                             ABOUT
                         </NavLink>
-                        <NavLink
-                            onClick={() => setOpenModal(false)}
-                            to='/contact'
-                            className='border py-2 pl-6'
-                        >
-                            CONTACT
-                        </NavLink>
+                        
                     </div>
                 </div>
             </nav>

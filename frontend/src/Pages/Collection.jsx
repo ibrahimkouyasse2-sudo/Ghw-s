@@ -3,21 +3,30 @@ import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import ProductItem from "../components/ProductItem";
+import { useSearchParams } from "react-router-dom";
 
 const Collection = () => {
-  const { products, search, showSearch} =useContext(ShopContext);
+  const { products, search, showSearch } = useContext(ShopContext);
+  const [searchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
   const [filterProducts, setFilterProducts] = useState([]);
   const [category, setCaterogy] = useState([]);
   const [subCategory, setSubCaterogy] = useState([]);
   const [sortType, setSortType] = useState("relavent");
 
+  useEffect(() => {
+    const type = searchParams.get("type");
+    if (type) {
+      setSubCaterogy([type]);
+    }
+  }, [searchParams]);
+
   const toggleCategory = (e) => {
     if (category.includes(e.target.value)) {
       setCaterogy((prev) => prev.filter((item) => item !== e.target.value));
     } else {
       setCaterogy((prev) => [...prev, e.target.value]);
-    } 
+    }
   };
   const toggleSubCategory = (e) => {
     if (subCategory.includes(e.target.value)) {
@@ -68,88 +77,207 @@ const Collection = () => {
 
   useEffect(() => {
     applyFilter();
-  }, [category, subCategory, search, showSearch,products]);
+  }, [category, subCategory, search, showSearch, products]);
 
   useEffect(() => {
     sortProduct();
   }, [sortType]);
 
   return (
-    <main className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
+    <main className="flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t">
       {/* ------------filter options----------- */}
-      <div className='min-w-60'>
-        <p onClick={() => setShowFilters(!showFilters)} className='my-2 text-xl flex items-center cursor-pointer gap-2'>
+      <div className="min-w-60">
+        <p
+          onClick={() => setShowFilters(!showFilters)}
+          className="my-2 text-xl flex items-center cursor-pointer gap-2"
+        >
           FILTERS{" "}
           <img
             className={`h-3 sm:hidden ${showFilters ? "rotate-90" : ""}`}
             src={assets.dropdown_icon}
-            alt='dropdown icon'
+            alt="dropdown icon"
           />
         </p>
         {/* -------category filter ------- */}
-        <div className={`border border-gray-300 pl-5 py-3 mt-6 sm:block ${showFilters ? "" : "hidden"}`}>
-          <p className='mb-3 text-sm font-medium'>CATEGORIES</p>
-          <div className='flex flex-col gap-2 text-sm font-light text-gray-700'>
-            <p className='flex gap-2'>
+        <div
+          className={`border border-gray-300 pl-5 py-3 mt-6 sm:block ${
+            showFilters ? "" : "hidden"
+          }`}
+        >
+          <p className="mb-3 text-sm font-medium">CATEGORIES</p>
+          <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
+            <p className="flex gap-2">
               <input
-                className='w-3'
-                type='checkbox'
-                value={"Men"}
+                className="w-3"
+                type="checkbox"
+                value={"Computers"}
                 onChange={toggleCategory}
               />{" "}
-              Men
+              Computers
             </p>
-            <p className='flex gap-2'>
+            <p className="flex gap-2">
               <input
-                className='w-3'
-                type='checkbox'
-                value={"Women"}
+                className="w-3"
+                type="checkbox"
+                value={"Components"}
                 onChange={toggleCategory}
               />{" "}
-              Women
+              Components
             </p>
-            <p className='flex gap-2'>
+            <p className="flex gap-2">
               <input
-                className='w-3'
-                type='checkbox'
-                value={"Kids"}
+                className="w-3"
+                type="checkbox"
+                value={"Peripherals"}
                 onChange={toggleCategory}
               />{" "}
-              Kids
+              Peripherals
+            </p>
+            <p className="flex gap-2">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Chairs"}
+                onChange={toggleCategory}
+              />{" "}
+              Chairs
             </p>
           </div>
         </div>
         {/* -------subCategory----------- */}
         <div
-          className={`border border-gray-300 pl-5 py-3 mt-6 sm:block ${showFilters ? "" : "hidden"}`}>
-          <p className='mb-3 text-sm font-medium'>TYPE</p>
-          <div className='flex flex-col gap-2 text-sm font-light text-gray-700'>
-            <p className='flex gap-2'>
+          className={`border border-gray-300 pl-5 py-3 mt-6 sm:block ${
+            showFilters ? "" : "hidden"
+          }`}
+        >
+          <p className="mb-3 text-sm font-medium">TYPE</p>
+          <div className="flex flex-col gap-2 text-sm font-light text-gray-700">
+            <p className="flex gap-2">
               <input
-                className='w-3'
-                type='checkbox'
-                value={"Topwear"}
+                className="w-3"
+                type="checkbox"
+                value={"Gaming PC"}
                 onChange={toggleSubCategory}
               />{" "}
-              Topwear
+              Gaming PC
             </p>
-            <p className='flex gap-2'>
+            <p className="flex gap-2">
               <input
-                className='w-3'
-                type='checkbox'
-                value={"Bottomwear"}
+                className="w-3"
+                type="checkbox"
+                value={"GPU"}
                 onChange={toggleSubCategory}
               />{" "}
-              Bottomwear
+              GPU
             </p>
-            <p className='flex gap-2 '>
+            <p className="flex gap-2 ">
               <input
-                className='w-3'
-                type='checkbox'
-                value={"Winterwear"}
+                className="w-3"
+                type="checkbox"
+                value={"CPU"}
                 onChange={toggleSubCategory}
               />{" "}
-              Winterwear
+              CPU
+            </p>
+            <p className="flex gap-2 ">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Monitor"}
+                onChange={toggleSubCategory}
+              />{" "}
+              Monitor
+            </p>
+            <p className="flex gap-2 ">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Keyboard"}
+                onChange={toggleSubCategory}
+              />{" "}
+              Keyboard
+            </p>
+            <p className="flex gap-2 ">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Mouse"}
+                onChange={toggleSubCategory}
+              />{" "}
+              Mouse
+            </p>
+            <p className="flex gap-2">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Full Setup"}
+                onChange={toggleSubCategory}
+              />{" "}
+              Full Setup
+            </p>
+            <p className="flex gap-2">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"PC Portable"}
+                onChange={toggleSubCategory}
+              />{" "}
+              PC Portable
+            </p>
+            <p className="flex gap-2">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Headsets"}
+                onChange={toggleSubCategory}
+              />{" "}
+              Headsets
+            </p>
+            <p className="flex gap-2">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"PC Cases"}
+                onChange={toggleSubCategory}
+              />{" "}
+              PC Cases
+            </p>
+            <p className="flex gap-2">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Power Supplies"}
+                onChange={toggleSubCategory}
+              />{" "}
+              Power Supplies
+            </p>
+            <p className="flex gap-2">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Hard Drives"}
+                onChange={toggleSubCategory}
+              />{" "}
+              Hard Drives
+            </p>
+            <p className="flex gap-2">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"RAM (PC Memory)"}
+                onChange={toggleSubCategory}
+              />{" "}
+              RAM (PC Memory)
+            </p>
+            
+            <p className="flex gap-2">
+              <input
+                className="w-3"
+                type="checkbox"
+                value={"Cooling"}
+                onChange={toggleSubCategory}
+              />{" "}
+              Cooling
             </p>
           </div>
         </div>
@@ -158,21 +286,23 @@ const Collection = () => {
       {/* ------------filter products----------- */}
       {/* Right Side */}
 
-      <div className='flex-1'>
-        <div className='flex justify-between text-base sm:text-2xl mb-4'>
+      <div className="flex-1">
+        <div className="flex justify-between text-base sm:text-2xl mb-4">
           <Title text1={"ALL"} text2={"COLLECTIONS"} />
 
           {/* -----product sort------- */}
-          <select onChange={(e) => setSortType(e.target.value)}
-            className='border border-gray-300 text-sm px-2'>
-            <option value='relavent'>Sort by: Relavent</option>
-            <option value='low-high'>Sort by: Low-High</option>
-            <option value='high-low'>Sort by: High-Low</option>
+          <select
+            onChange={(e) => setSortType(e.target.value)}
+            className="border border-gray-300 text-sm px-2 dark:bg-gray-800 dark:text-gray-200"
+          >
+            <option value="relavent">Sort by: Relavent</option>
+            <option value="low-high">Sort by: Low-High</option>
+            <option value="high-low">Sort by: High-Low</option>
           </select>
         </div>
 
         {/* ---------Map products=---------- */}
-        <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6'>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6">
           {filterProducts.map((item, index) => (
             <ProductItem key={index} {...item} />
           ))}

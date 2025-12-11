@@ -8,6 +8,13 @@ import toast from "react-hot-toast";
 
 const PlaceOrder = () => {
   const { navigate, backendUrl, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(ShopContext);
+  
+  // Redirect to login if user is not authenticated
+  React.useEffect(() => {
+    if (!token) {
+      navigate('/login');
+    }
+  }, [token]);
   const [method, setMethod] = useState("cod");
   const [formData, setFormData] = useState({
     firstName: "",
@@ -28,51 +35,53 @@ const PlaceOrder = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    if (!backendUrl) {
+      toast.error("Backend URL not configured (VITE_BACKEND_URL).");
+      return;
+    }
     try {
       let orderItems = [];
-      for (const items in cartItems) {
-        for (const item in cartItems[items]) {
-          if (cartItems[items][item] > 0) {
-            const itemInfo = structuredClone(products.find((product) => product._id === items));
-
-            if (itemInfo) {
-              itemInfo.size = item;
-              itemInfo.quantity = cartItems[items][item];
-              orderItems.push(itemInfo);
-            }
+      for (const itemId in cartItems) {
+        if (cartItems[itemId] > 0) {
+          const itemInfo = structuredClone(products.find((product) => product._id === itemId));
+          if (itemInfo) {
+            itemInfo.quantity = cartItems[itemId];
+            orderItems.push(itemInfo);
           }
         }
       }
       
+      if (orderItems.length === 0) {
+        toast.error("Your cart is empty.");
+        return;
+      }
+
       let orderData = {
         items: orderItems,
         address: formData,
         amount: getCartAmount() + delivery_fee,
       };
 
-      switch (method) {
-        //api for COD
-        case "cod":
-          const res = await axios.post(backendUrl+ "/api/order/place", orderData, {headers: { token }});
-          
-          if (res.data.success) {
-            setCartItems({});
-            navigate("/orders");
-          } else {
-            toast.error(res.data.message);
-          }
-          break;
-        case 'stripe':
-          const stripe = await axios.post(backendUrl + "/api/order/stripe", orderData, {headers: { token },});
-          if (stripe.data.success) {
-            const { session_url } = stripe.data
-            window.location.replace(session_url)
-          } else {
-            toast.error(stripe.data.message)
-          }
-          break
-        default:
-          break;
+      const headers = token ? { headers: { token } } : {};
+
+      // Only COD (cash on delivery) supported
+      console.log("Placing order", { orderData, headers });
+      let res;
+      try {
+        res = await axios.post(backendUrl+ "/api/order/place", orderData, headers);
+      } catch (err) {
+        console.error("Order request failed", err);
+        const serverMessage = err?.response?.data?.message || err.message || "Request failed";
+        toast.error("Order failed: " + serverMessage);
+        return;
+      }
+
+      if (res.data && res.data.success) {
+        setCartItems({});
+        toast.success("Order placed successfully.");
+        if (token) navigate("/orders"); else navigate("/");
+      } else {
+        toast.error((res && res.data && res.data.message) || "Failed to place order");
       }
     } catch (error) {
       console.log(error);
@@ -81,7 +90,12 @@ const PlaceOrder = () => {
   };
 
   return (
-    <form onSubmit={onSubmitHandler}
+    <form
+      noValidate
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmitHandler(e);
+      }}
       className='flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t'>
       {/* -------------Left side ---------- */}
       <div className='flex flex-col gap-4 w-full sm:max-w-[480px]'>
@@ -90,7 +104,6 @@ const PlaceOrder = () => {
         </div>
         <div className='flex gap-3'>
           <input
-            required
             onChange={onChangeHandler}
             name='firstName'
             value={formData.firstName}
@@ -99,7 +112,6 @@ const PlaceOrder = () => {
             placeholder='First name'
           />
           <input
-            required
             onChange={onChangeHandler}
             name='lastName'
             value={formData.lastName}
@@ -109,7 +121,6 @@ const PlaceOrder = () => {
           />
         </div>
         <input
-          required
           onChange={onChangeHandler}
           name='email'
           value={formData.email}
@@ -117,18 +128,16 @@ const PlaceOrder = () => {
           type='email'
           placeholder='Your email'
         />
-        <input
-          required
-          onChange={onChangeHandler}
-          name='street'
-          value={formData.street}
-          className='border border-gray-300 rounded py-1.5 px-3.5 w-full'
-          type='text'
-          placeholder='Street'
-        />
+          <input
+            onChange={onChangeHandler}
+            name='street'
+            value={formData.street}
+            className='border border-gray-300 rounded py-1.5 px-3.5 w-full'
+            type='text'
+            placeholder='Street'
+          />
         <div className='flex gap-3'>
           <input
-            required
             onChange={onChangeHandler}
             name='city'
             value={formData.city}
@@ -137,7 +146,6 @@ const PlaceOrder = () => {
             placeholder='City'
           />
           <input
-            required
             onChange={onChangeHandler}
             name='state'
             value={formData.state}
@@ -148,7 +156,6 @@ const PlaceOrder = () => {
         </div>
         <div className='flex gap-3'>
           <input
-            required
             onChange={onChangeHandler}
             name='zipcode'
             value={formData.zipcode}
@@ -157,7 +164,6 @@ const PlaceOrder = () => {
             placeholder='Zipcode'
           />
           <input
-            required
             onChange={onChangeHandler}
             name='country'
             value={formData.country}
@@ -168,7 +174,6 @@ const PlaceOrder = () => {
         </div>
 
         <input
-          required
           onChange={onChangeHandler}
           name='phone'
           value={formData.phone}
@@ -189,30 +194,9 @@ const PlaceOrder = () => {
           <Title text1={"PAYMENT"} text2={"METHOD"} />
           <div className='flex flex-col gap-3 lg:flex-row'>
             <div
-              onClick={() => setMethod("stripe")}
-              className='flex items-center gap-3 border p-2 px-3 cursor-pointer'
+              className='flex items-center gap-3 border p-2 px-3'
             >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${method === "stripe" ? "bg-green-700" : ""
-                  }`}
-              ></p>
-              <img
-                className='h-5 mx-4'
-                src={assets.stripe_logo}
-                alt='stripe logo'
-              />
-            </div>
-
-
-
-            <div
-              onClick={() => setMethod("cod")}
-              className='flex items-center gap-3 border p-2 px-3 cursor-pointer'
-            >
-              <p
-                className={`min-w-3.5 h-3.5 border rounded-full ${method === "cod" ? "bg-green-700" : ""
-                  }`}
-              ></p>
+              <p className={`min-w-3.5 h-3.5 border rounded-full bg-green-700`}></p>
               <p className='text-gray-500 text-sm font-medium mx-4'>
                 CASH ON DELIVERY
               </p>

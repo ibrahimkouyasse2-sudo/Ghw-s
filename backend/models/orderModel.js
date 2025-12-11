@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const orderSchema = new mongoose.Schema({
   userId: {
     type: String,
-    required: true,
+    required: false,
   },
   items: {
     type: Array,
@@ -11,7 +11,7 @@ const orderSchema = new mongoose.Schema({
   },
   address: {
     type: Object,
-    required: true,
+    required: false,
   },
   amount: {
     type: Number,

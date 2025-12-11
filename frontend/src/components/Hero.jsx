@@ -1,30 +1,62 @@
 import React from "react";
 import { assets } from "../assets/assets";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
+  const navigate = useNavigate();
+
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+  };
+
+  const slides = [
+    {
+      image: assets.gaming_pc,
+      type: "Gaming PC",
+    },
+    {
+      image: assets.monitor,
+      type: "Monitor",
+    },
+    {
+      image: assets.gpu,
+      type: "GPU",
+    },
+  ];
+
+  const handleSlideClick = (type) => {
+    navigate(`/collection?type=${encodeURIComponent(type)}`);
+  };
+
   return (
-    <section className='flex flex-col sm:flex-row border border-gray-400'>
-      {/* -------hero left side ---------- */}
-      <div className='w-full sm:w-1/2 flex items-center justify-center py-10 sm:py-0'>
-        <div className='text-[#414141]'>
-          <div className='flex items-center gap-2'>
-            <p className='w-8 md:w-11 h-[2px] bg-[#414141]'></p>
-
-            <p className='font-medium text-sm md:text-base'> OUR BESTSELLER</p>
+    <section className='slider-container'>
+      <Slider {...settings}>
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className='slide'
+            onClick={() => handleSlideClick(slide.type)}
+          >
+            <img
+              src={slide.image}
+              alt={slide.type}
+              className='w-full h-[400px] object-cover cursor-pointer'
+            />
+            <h2 className='text-center mt-4 text-xl font-semibold'>
+              {slide.type}
+            </h2>
           </div>
-          <h1 className='prata-regular text-3xl sm:py-3 lg:text-5xl leading-relaxed'>
-            Latest Arrivals
-          </h1>
-
-          <div className='flex items-center gap-2'>
-            <p className='font-semibold text-sm md:text-base'>SHOP NOW</p>
-            <p className='w-8 md:w-11 h-[2px] bg-[#414141]'></p>
-          </div>
-        </div>
-      </div>
-      {/* -------hero right side ---------- */}
-
-      <img className='w-full sm:w-1/2' src={assets.hero_img} alt='hero image' />
+        ))}
+      </Slider>
     </section>
   );
 };

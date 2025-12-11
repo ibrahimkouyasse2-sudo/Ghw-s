@@ -14,8 +14,8 @@ const Add = ({ token }) => {
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [price, setPrice] = useState("")
-  const [category, setCategory] = useState("Men")
-  const [subCategory, setSubcategory] = useState("Topwear")
+  const [category, setCategory] = useState("Computers")
+  const [subCategory, setSubcategory] = useState("Gaming PC")
   const [bestseller, setBestseller] = useState(false)
   const [sizes, setSizes] = useState([])
 
@@ -43,7 +43,7 @@ const Add = ({ token }) => {
         setName('')
         setDescription('')
         setCategory('')
-        setSubcategory('')
+        setSubcategory('NOsub')
         setImage1(false)
         setImage2(false)
         setImage3(false)
@@ -138,9 +138,10 @@ const Add = ({ token }) => {
               name='category'
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option value='Men'>Men</option>
-              <option value='Women'>Women</option>
-              <option value='Kids'>Kids</option>
+              <option value='Computers'>Computers</option>
+              <option value='Components'>Components</option>
+              <option value='Peripherals'>Peripherals</option>
+              <option value='Chairs'>Chairs</option>
             </select>
           </div>
           <div>
@@ -149,9 +150,21 @@ const Add = ({ token }) => {
               name='subCategory'
               onChange={(e) => setSubcategory(e.target.value)}
             >
-              <option value='Topwear'>Topwear</option>
-              <option value='Bottomwear'>Bottomwear</option>
-              <option value='Winterwear'>Winterwear</option>
+              <option value='NOsub'>NOsub</option>
+              <option value='Gaming PC'>Gaming PC</option>
+              <option value='GPU'>GPU</option>
+              <option value='CPU'>CPU</option>
+              <option value='Monitor'>Monitor</option>
+              <option value='Keyboard'>Keyboard</option>
+              <option value='Mouse'>Mouse</option>
+              <option value='Full Setup'>Full Setup</option>
+              <option value='PC Portable'>PC Portable</option>
+              <option value='Headsets'>Headsets</option>
+              <option value='PC Cases'>PC Cases</option>
+              <option value='Power Supplies'>Power Supplies</option>
+              <option value='Hard Drives'>Hard Drives</option>
+              <option value='RAM (PC Memory)'>RAM (PC Memory)</option>
+              <option value='Cooling'>Cooling</option>
             </select>
           </div>
 
@@ -164,45 +177,9 @@ const Add = ({ token }) => {
               value={price}
               className='w-full max-w-[500px] px-3 py-2'
               type='number'
-              placeholder='25SR'
+              placeholder='Price in DH'
               required
             />
-          </div>
-        </div>
-
-        <div>
-          <p className='mb-2 font-medium text-sm '>Product Sizes</p>
-          <div className='flex gap-2.5'>
-            <div onClick={() =>
-              setSizes(prev =>
-                prev.includes("S") ? prev.filter(item => item !== "S") : [...prev, "S"]
-              )}>
-              <p className={`${sizes.includes("S") ? "bg-pink-100" : "bg-pink-200"} px-3 py-1 cursor-pointer`}>S</p>
-            </div>
-            <div onClick={() =>
-              setSizes(prev =>
-                prev.includes("M") ? prev.filter(item => item !== "M") : [...prev, "M"]
-              )}>
-              <p className={`${sizes.includes("M") ? "bg-pink-100" : "bg-pink-200"} px-3 py-1 cursor-pointer`}>M</p>
-            </div>
-            <div onClick={() =>
-              setSizes(prev =>
-                prev.includes("L") ? prev.filter(item => item !== "L") : [...prev, "L"]
-              )}>
-              <p className={`${sizes.includes("L") ? "bg-pink-100" : "bg-pink-200"} px-3 py-1 cursor-pointer`}>L</p>
-            </div>
-            <div onClick={() =>
-              setSizes(prev =>
-                prev.includes("XL") ? prev.filter(item => item !== "XL") : [...prev, "XL"]
-              )}>
-              <p className={`${sizes.includes("XL") ? "bg-pink-100" : "bg-pink-200"} px-3 py-1 cursor-pointer`}>XL</p>
-            </div>
-            <div onClick={() =>
-              setSizes(prev =>
-                prev.includes("XXL") ? prev.filter(item => item !== "XXL") : [...prev, "XXL"]
-              )}>
-              <p className={`${sizes.includes("XXL") ? "bg-pink-100" : "bg-pink-200"} px-3 py-1 cursor-pointer`}>XXL</p>
-            </div>
           </div>
         </div>
 

@@ -1,87 +1,62 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
-import Stripe from "stripe";
+import jwt from "jsonwebtoken";
 
 const currency = "inr";
 const delivery_charge = 49;
 
-//GATEWAY INITIALIZE
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// Stripe removed — using COD / guest orders only
 
 
 //order using COD
 const placeOrder = async (req, res, next) => {
   try {
-    const { userId, address, amount, items } = req.body;
+    let { userId, address, amount, items } = req.body;
 
-    const orderData = {items,address,amount,userId,paymentMethod: "COD",payment: false,date: Date.now(),};
+    // If userId not provided in body but token exists, try to decode it
+    if (!userId && req.headers && req.headers.token) {
+      try {
+        const decoded = jwt.verify(req.headers.token, process.env.JWT_SECRET);
+        userId = decoded.id;
+      } catch (err) {
+        // ignore token decode errors for guest checkout
+      }
+    }
 
-    const newOrder = new orderModel(orderData)
-    await newOrder.save()
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.json({ success: false, message: "No items in order" });
+    }
 
-    await userModel.findByIdAndUpdate(userId, { cartData: {} });
-
-    res.json({success:true , message: "Order Placed"}) 
-  } catch (error) {
-    console.log(error);
-    res.json({success:false,message:error.message})
-    
-  }
-};
-
-//place order using stripe
-const placeOrderStripe = async (req, res, next) => {
-  try {
-    const { userId, address, amount, items } = req.body;
-    const { origin } = req.headers;
     const orderData = {
       items,
       address,
       amount,
-      userId,
-      paymentMethod: "stripe",
+      userId: userId || null,
+      paymentMethod: "COD",
       payment: false,
       date: Date.now(),
     };
 
-    const newOrder = new orderModel(orderData)
-    await newOrder.save()
+    const newOrder = new orderModel(orderData);
+    await newOrder.save();
 
-    const line_items = items.map((item) => ({
-      price_data: {
-        currency: currency,
-        product_data: {
-          name: item.name,
-        },
-        unit_amount: item.price * 100,
-      },
-      quantity: item.quantity,
-    }));
+    // If the order is placed by a logged-in user, clear their cart
+    if (userId) {
+      try {
+        await userModel.findByIdAndUpdate(userId, { cartData: {} });
+      } catch (err) {
+        console.log("Failed clearing user cart:", err.message);
+      }
+    }
 
-    line_items.push({
-      price_data: {
-        currency: currency,
-        product_data: {
-          name: "Delivery Charges",
-        },
-        unit_amount: delivery_charge *100,
-      },
-      quantity: 1,
-    });
-
-    const session = await stripe.checkout.sessions.create({
-      success_url: `${origin}/verify?success=true&orderId=${newOrder._id}`,
-      cancel_url: `${origin}/verify?success=false&orderId=${newOrder._id}`,
-      line_items,
-      mode: "payment",
-    });
-
-    res.json({ success: true, session_url: session.url });
+    res.json({ success: true, message: "Order Placed", orderId: newOrder._id });
   } catch (error) {
     console.log(error);
-    res.json({success:false,message:error.message})
+    res.json({ success: false, message: error.message });
   }
 };
+
+// Stripe removed — guest and COD orders handled in `placeOrder`.
 
 
 //place order using razorpay
@@ -130,32 +105,12 @@ const updateStatus = async (req, res, next) => {
 };
 
 
-//Verify stripe payment
-const verifyStripePayment = async (req, res, next) => {
-  try {
-    const { orderId, success, userId } = req.body;
-
-    if (success === "true") {
-      await orderModel.findByIdAndUpdate( orderId,{ payment: true });
-      await userModel.findByIdAndUpdate(userId,{ cartData: {} });
-
-      res.json({success:true})
-    } else {
-      await orderModel.findByIdAndDelete(orderId);
-      res.json({success:false})
-    }
-  } catch (error) {
-    console.log(error);
-    res.json({success:false,message: error.message})
-  }
-};
+// Stripe verification removed
 
 export {
   placeOrder,
-  placeOrderStripe,
   placeOrderRazorpay,
   allOrders,
   userOrders,
   updateStatus,
-  verifyStripePayment,
 };

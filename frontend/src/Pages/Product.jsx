@@ -57,14 +57,12 @@ const Product = () => {
         <div className='flex-1'>
           <h1 className='font-medium text-2xl mt-2'>{productData.name}</h1>
 
-          <div className='flex items-center gap-1 mt-2'>
+            <div className='flex items-center gap-1 mt-2'>
             <img src={assets.star_icon} alt='' className='w-3.5' />
             <img src={assets.star_icon} alt='' className='w-3.5' />
             <img src={assets.star_icon} alt='' className='w-3.5' />
             <img src={assets.star_icon} alt='' className='w-3.5' />
             <img src={assets.star_dull_icon} alt='' className='w-3.5' />
-
-            <p className='pl-2'>(132)</p>
           </div>
           <p className='mt-5 text-3xl font-medium'>
             {productData.price}
@@ -72,25 +70,28 @@ const Product = () => {
           </p>
           <p className='mt-5 text-gray-500 w-4/5'>{productData.description}</p>
 
-          <div className='flex flex-col gap-4 my-8'>
-            <p>Select Size</p>
-            <div className='flex gap-2'>
-              {productData.sizes.map((item, i) => (
-                <button
-                  onClick={() => setSize(item)}
-                  key={i}
-                  className={`border py-2 px-4 bg-slate-100 ${
-                    item === size ? "border border-orange-500 " : ""
-                  }`}
-                >
-                  {item}
-                </button>
-              ))}
+          {productData.sizes && productData.sizes.length > 0 && (
+            <div className='flex flex-col gap-4 my-8'>
+              <p>Select Size</p>
+              <div className='flex gap-2'>
+                {productData.sizes.map((item, i) => (
+                  <button
+                    onClick={() => setSize(item)}
+                    key={i}
+                    className={`border py-2 px-4 bg-slate-100 ${
+                      item === size ? "border border-orange-500 " : ""
+                    }`}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
           <button
             onClick={() => {
-              addToCart(productData._id, size), size && navigate("/cart");
+              addToCart(productData._id);
+              navigate("/cart");
             }}
             className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'
           >
@@ -105,25 +106,7 @@ const Product = () => {
         </div>
       </div>
 
-      {/* ------description & review secion-------- */}
-      <div className='mt-20'>
-        <div className='flex'>
-          <p className='border px-5 py-3 text-sm'>Description</p>
-          <p className='border px-5 py-3 text-sm'>Reviews (132)</p>
-        </div>
-        <div className='flex flex-col gap-4 border p-6 text-sm text-gray-500'>
-          <p>
-            {
-              "A lightweight, usually knitted, pullover shirt, close-fitting and with a round neckline and short sleeves, worn as an undershirt or outer garment."
-            }
-          </p>
-          <p>
-            {
-              "The Nile Men's Round Neck T-shirt is crafted from 100% pure cotton, offering a soft, breathable texture that feels great on the skin. Its lightweight fabric ensures maximum comfort throughout the day, whether you're out and about or lounging at home. The classic round neck design adds a timeless touch, making it easy to pair with any outfit. Ideal for casual wear, this T-shirt strikes the perfect balance between comfort and style. Upgrade your everyday essentials with this versatile and reliable piece."
-            }
-          </p>
-        </div>
-      </div>
+      {/* description & reviews removed per request */}
 
       {/* ------display related products */}
       <RelatedProduct category={productData.category}subCategory={productData.subCategory}/>
