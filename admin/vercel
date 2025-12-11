@@ -1,0 +1,11 @@
+## Vercel environment reference for admin
+# This file lists the environment variables the admin app needs when deployed to Vercel.
+# Do NOT commit secrets. Add them in the Vercel dashboard: Project > Settings > Environment Variables.
+
+# Backend URL (after backend is deployed, paste the full URL here in Vercel settings)
+VITE_BACKEND_URL=https://your-backend-url.vercel.app
+
+# Notes:
+# - Build Command (Vercel): npm run build
+# - Output Directory (Vercel): dist
+# - The admin app reads `import.meta.env.VITE_BACKEND_URL` at build time.
