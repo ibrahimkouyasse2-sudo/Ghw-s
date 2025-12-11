@@ -1,0 +1,22 @@
+## Vercel environment reference for backend
+# WARNING: do NOT commit real secrets to your repository.
+# This file is a local reference showing which env variables the backend needs.
+# Instead of committing, add these values in the Vercel dashboard (Project > Settings > Environment Variables).
+
+# Copy the following keys into Vercel (Production / Preview / Development) as appropriate.
+MONGO_URI=mongodb+srv://ibraahimwahid_db_user:IboLoHajar@gaminghardware.y5v20fz.mongodb.net/?appName=gamingHardWare
+PORT=5000
+JWT_SECRET=your_jwt_secret_key_here_change_in_production
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=admin123
+CLOUDINARY_NAME=dhryg1ilq
+CLOUDINARY_API_KEY=857523222892249
+CLOUDINARY_SECRET_KEY=9MPbcrmKcaEXSRJ0Qpz70i0IbQs
+
+# Optional / payment keys (add if you use them):
+# RAZORPAY_KEY_ID=
+# RAZORPAY_KEY_SECRET=
+
+# Notes:
+# - After adding these to Vercel, remove any `.env` files from the repo and rotate secrets.
+# - Vercel injects env vars at runtime; do not store secrets in source code.
