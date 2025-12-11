@@ -1,10 +1,21 @@
-import app from '../server.js';
+import connectDB from './config/mongodb.js';
+import productModel from './models/productModel.js';
 
-// Explicit function for /product -> forward to Express at /api/product
-export default function handler(req, res) {
-  // Ensure Express sees the path under /api
-  if (!req.url.startsWith('/api')) {
-    req.url = '/api/product' + (req.url === '/' ? '' : req.url);
+export default async function handler(req, res) {
+  if (req.method !== 'GET') {
+    res.statusCode = 405;
+    res.setHeader('Content-Type', 'application/json');
+    return res.end(JSON.stringify({ ok: false, message: 'Method Not Allowed' }));
   }
-  return app(req, res);
+
+  try {
+    await connectDB();
+    const products = await productModel.find().limit(100).lean();
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(200).end(JSON.stringify({ success: true, products }));
+  } catch (err) {
+    console.error('product handler error', err);
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(500).end(JSON.stringify({ success: false, error: String(err) }));
+  }
 }
