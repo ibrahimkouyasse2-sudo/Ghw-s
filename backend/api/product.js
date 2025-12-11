@@ -10,12 +10,19 @@ export default async function handler(req, res) {
 
   try {
     await connectDB();
+  } catch (err) {
+    console.error('product handler db connect error', err && err.message ? err.message : err);
+    res.setHeader('Content-Type', 'application/json');
+    return res.status(200).end(JSON.stringify({ success: true, products: [], dbAvailable: false, message: 'DB unavailable' }));
+  }
+
+  try {
     const products = await productModel.find().limit(100).lean();
     res.setHeader('Content-Type', 'application/json');
-    return res.status(200).end(JSON.stringify({ success: true, products }));
+    return res.status(200).end(JSON.stringify({ success: true, products, dbAvailable: true }));
   } catch (err) {
-    console.error('product handler error', err);
+    console.error('product handler query error', err);
     res.setHeader('Content-Type', 'application/json');
-    return res.status(500).end(JSON.stringify({ success: false, error: String(err) }));
+    return res.status(200).end(JSON.stringify({ success: true, products: [], dbAvailable: false, message: 'DB query failed' }));
   }
 }
