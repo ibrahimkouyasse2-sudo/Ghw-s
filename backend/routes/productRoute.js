@@ -19,4 +19,7 @@ productRouter.post("/remove",adminAuth,removeProduct);
 productRouter.post("/single", singleProduct);
 productRouter.get("/list", listProducts);
 
+// Root GET - return product list at /api/product
+productRouter.get("/", listProducts);
+
 export default productRouter;

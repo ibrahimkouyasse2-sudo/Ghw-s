@@ -1,7 +1,8 @@
-import app from './server.js';
+// backend/start.js
+import { app } from './server.js';  // ✅ use { app }
 
 const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
-  console.log(`Server started on PORT: ${port}`);
+  console.log(`Server running on port ${port}`);
 });
