@@ -31,10 +31,6 @@ app.get("/",(req,res)=>{
     res.send("API working")
 })
 
-app.listen(port,()=>{
-    console.log(`Server started on PORT: ${port}`);
-    
-})
-
+// Do NOT call app.listen() here. For local development use `start.js`.
 export default app;
 
