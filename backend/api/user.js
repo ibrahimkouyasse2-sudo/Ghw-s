@@ -24,12 +24,3 @@ export default async function handler(req, res) {
     return res.status(200).end(JSON.stringify({ success: true, users: [], dbAvailable: false, message: 'DB query failed' }));
   }
 }
-import app from '../server.js';
-
-// Explicit function for /user -> forward to Express at /api/user
-export default function handler(req, res) {
-  if (!req.url.startsWith('/api')) {
-    req.url = '/api/user' + (req.url === '/' ? '' : req.url);
-  }
-  return app(req, res);
-}
