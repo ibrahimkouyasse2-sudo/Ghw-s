@@ -30,4 +30,4 @@ app.get("/", (req, res) => {
 });
 
 // Do NOT call app.listen() here
-export { app };
+export default app;
