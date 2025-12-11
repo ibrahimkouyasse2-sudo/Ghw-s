@@ -19,10 +19,10 @@ app.use(express.json());
 app.use(cors());
 
 // API Endpoints
-app.use("/api/user", userRouter);
-app.use("/api/product", productRouter);
-app.use("/api/cart", cartRouter);
-app.use("/api/order", orderRouter);
+app.use(["/api/user", "/user"], userRouter);
+app.use(["/api/product", "/product"], productRouter);
+app.use(["/api/cart", "/cart"], cartRouter);
+app.use(["/api/order", "/order"], orderRouter);
 
 // Test endpoint
 app.get("/", (req, res) => {
