@@ -1,5 +1,5 @@
 // backend/start.js
-import { app } from './server.js';  // ✅ use { app }
+import app from './server.js';
 
 const port = process.env.PORT || 4000;
 
