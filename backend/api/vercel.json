@@ -1,16 +1,5 @@
 {
   "version": 2,
-  "routes": [
-    { "src": "^/health$", "dest": "/health.js" },
-    { "src": "^/product_list$", "dest": "/product_list.js" },
-    { "src": "^/product(.*)$", "dest": "/product.js" },
-    { "src": "^/user(.*)$", "dest": "/user.js" },
-    { "src": "^/api/(.*)$", "dest": "/[...slug].js" },
-    { "src": "^/(.*)$", "dest": "/[...slug].js" }
-  ]
-}
-{
-  "version": 2,
   "builds": [
     {
       "src": "**/*.js",
@@ -18,9 +7,11 @@
     }
   ],
   "routes": [
-    {
-      "src": "^/(.*)$",
-      "dest": "/$1"
-    }
+    { "src": "^/health$", "dest": "/health.js" },
+    { "src": "^/product_list$", "dest": "/product_list.js" },
+    { "src": "^/product(.*)$", "dest": "/product.js" },
+    { "src": "^/user(.*)$", "dest": "/user.js" },
+    { "src": "^/api/(.*)$", "dest": "/[...slug].js" },
+    { "src": "^/(.*)$", "dest": "/[...slug].js" }
   ]
 }
