@@ -1,24 +1,18 @@
-// api/server.js
-
+// backend/server.js
 import express from "express";
 import cors from "cors";
 import "dotenv/config";
-import serverless from "serverless-http";
-
-// DB + Cloud
 import connectDB from "./config/mongodb.js";
 import connectCloudinary from "./config/cloudinary.js";
-
-// Routes
 import userRouter from "./routes/userRoute.js";
 import productRouter from "./routes/productRoute.js";
 import cartRouter from "./routes/cartRoute.js";
 import orderRouter from "./routes/orderRoute.js";
+import serverless from "serverless-http";
 
-// Create App
+
+// App configuration
 const app = express();
-
-// Connect DB + Cloudinary
 connectDB();
 connectCloudinary();
 
@@ -26,18 +20,17 @@ connectCloudinary();
 app.use(express.json());
 app.use(cors());
 
-// API Routes
-app.use("/api/user", userRouter);
-app.use("/api/product", productRouter);
-app.use("/api/cart", cartRouter);
-app.use("/api/order", orderRouter);
+// API Endpoints
+app.use(["/api/user", "/user"], userRouter);
+app.use(["/api/product", "/product"], productRouter);
+app.use(["/api/cart", "/cart"], cartRouter);
+app.use(["/api/order", "/order"], orderRouter);
 
-// Health Check
+// Test endpoint
 app.get("/", (req, res) => {
   res.send("API working");
 });
 
-// ❌ NO app.listen()
-// ✅ Export handler for Vercel Serverless
-export const handler = serverless(app);
+// Do NOT call app.listen() here
 export default app;
+export const handler = serverless(app);
