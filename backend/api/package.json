@@ -1,8 +1,0 @@
-{
-  "name": "backend-api-runtime",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "mongoose": "^7.3.0"
-  }
-}
