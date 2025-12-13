@@ -1,15 +1,15 @@
 import express from "express";
-import{loginUser,registerUser,adminLogin} from "../controllers/userController.js";
+import { loginUser, registerUser } from "../controllers/userController.js";
 
 const userRouter = express.Router();
 
-userRouter.post("/register",registerUser);
-userRouter.post("/login",loginUser);
-userRouter.post("/admin",adminLogin);
+// user + admin use SAME login
+userRouter.post("/register", registerUser);
+userRouter.post("/login", loginUser);
 
-// Root GET - return a simple status or user list endpoint at /api/user
+// test
 userRouter.get("/", (req, res) => {
-	res.json({ success: true, message: "User API is working" });
+  res.json({ success: true, message: "User API is working" });
 });
 
 export default userRouter;
