@@ -29,7 +29,12 @@ const List = ({ token }) => {
   /* ======================
      DELETE PRODUCT (FIXED)
   ====================== */
- const removeProduct = async () => {
+ const removeProduct = async (item) => {
+  if (!item || !item._id) {
+    toast.error("Invalid product");
+    return;
+  }
+
   const confirmDelete = window.confirm(
     `Are you sure you want to delete:\n\n"${item.name}" ?`
   );
@@ -53,12 +58,10 @@ const List = ({ token }) => {
       toast.error(response.data.message);
     }
   } catch (error) {
-    console.error(error);
-    toast.error(
-      error.response?.data?.message || "Delete failed"
-    );
+    toast.error(error.response?.data?.message || "Delete failed");
   }
 };
+
 
 
   useEffect(() => {
@@ -94,7 +97,7 @@ const List = ({ token }) => {
           <p>{currency}{item.price}</p>
           <p
             className="text-center cursor-pointer text-red-500 text-lg"
-            onClick={() => removeProduct(item._id)}
+            onClick={() => removeProduct(item)}
           >
             ✖
           </p>
