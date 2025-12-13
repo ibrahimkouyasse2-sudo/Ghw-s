@@ -61,19 +61,31 @@ const Cart = () => {
                 </div>
               </div>
               <input
-                onChange={(e) => {
-                  const value = Number(e.target.value);
-                  if (value > 0) {
-                    updateQuantity(item._id, value);
-                  }
-                }}
-                className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1'
-                type='number'
+                type="number"
                 inputMode="numeric"
                 min={1}
                 max={3}
-                defaultValue={item.quantity}
+                value={item.quantity}
+                className="border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1"
+                onChange={(e) => {
+                  let value = Number(e.target.value);
+
+                  if (isNaN(value)) return;
+
+                  // 🔒 clamp value
+                  if (value < 1) value = 1;
+                  if (value > 3) value = 3;
+
+                  updateQuantity(item._id, value);
+                }}
+                onBlur={(e) => {
+                  // Fix empty input
+                  if (!e.target.value) {
+                    updateQuantity(item._id, 1);
+                  }
+                }}
               />
+
 
               <img
                 onClick={() => updateQuantity(item._id, 0)}
