@@ -38,5 +38,5 @@ const App = () => {
     </ThemeProvider>
   );
 };
-
+export const backendUrl = "https://ghw-s-5dby.vercel.app"
 export default App;
