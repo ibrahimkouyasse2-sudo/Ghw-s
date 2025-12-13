@@ -29,32 +29,37 @@ const List = ({ token }) => {
   /* ======================
      DELETE PRODUCT (FIXED)
   ====================== */
-  const removeProduct = async (productId) => {
-    if (!window.confirm("Delete this product?")) return;
+ const removeProduct = async (productId, productName) => {
+  const confirmDelete = window.confirm(
+    `Are you sure you want to delete:\n\n"${productName}" ?`
+  );
 
-    try {
-      const response = await axios.delete(
-        `${backendUrl}/api/product/delete/${productId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+  if (!confirmDelete) return;
 
-      if (response.data.success) {
-        toast.success("Product deleted");
-        setList((prev) => prev.filter(p => p._id !== productId));
-      } else {
-        toast.error(response.data.message);
+  try {
+    const response = await axios.delete(
+      `${backendUrl}/api/product/delete/${productId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    } catch (error) {
-      console.error(error);
-      toast.error(
-        error.response?.data?.message || "Delete failed"
-      );
+    );
+
+    if (response.data.success) {
+      toast.success(`"${productName}" deleted`);
+      setList((prev) => prev.filter((p) => p._id !== productId));
+    } else {
+      toast.error(response.data.message);
     }
-  };
+  } catch (error) {
+    console.error(error);
+    toast.error(
+      error.response?.data?.message || "Delete failed"
+    );
+  }
+};
+
 
   useEffect(() => {
     fetchList();
