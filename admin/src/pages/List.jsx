@@ -29,16 +29,16 @@ const List = ({ token }) => {
   /* ======================
      DELETE PRODUCT (FIXED)
   ====================== */
- const removeProduct = async (productId, productName) => {
+ const removeProduct = async () => {
   const confirmDelete = window.confirm(
-    `Are you sure you want to delete:\n\n"${productName}" ?`
+    `Are you sure you want to delete:\n\n"${item.name}" ?`
   );
 
   if (!confirmDelete) return;
 
   try {
     const response = await axios.delete(
-      `${backendUrl}/api/product/delete/${productId}`,
+      `${backendUrl}/api/product/delete/${item._id}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -47,8 +47,8 @@ const List = ({ token }) => {
     );
 
     if (response.data.success) {
-      toast.success(`"${productName}" deleted`);
-      setList((prev) => prev.filter((p) => p._id !== productId));
+      toast.success(`"${item.name}" deleted`);
+      setList((prev) => prev.filter((p) => p._id !== item._id));
     } else {
       toast.error(response.data.message);
     }
