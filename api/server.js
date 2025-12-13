@@ -13,11 +13,25 @@ import orderRouter from "./routes/orderRoute.js";
 
 const app = express();
 
-// 🔗 DB & services
-connectDB();
-connectCloudinary();
+// ================== SAFE STARTUP ==================
+let isConnected = false;
 
-// 🔧 Middleware (IMPORTANT)
+const startServer = async () => {
+  if (isConnected) return;
+
+  try {
+    await connectDB();
+    await connectCloudinary();
+    isConnected = true;
+    console.log("✅ Services connected");
+  } catch (err) {
+    console.error("❌ Startup crash:", err.message);
+  }
+};
+
+startServer();
+
+// ================== MIDDLEWARE ==================
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -28,16 +42,16 @@ app.use(
   })
 );
 
-// 🧭 Routes
+// ================== ROUTES ==================
 app.use("/api/user", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/order", orderRouter);
 
-// 🧪 Health check
+// ================== HEALTH CHECK ==================
 app.get("/", (req, res) => {
   res.status(200).send("API working");
 });
 
-// ✅ Vercel expects THIS
+// ================== EXPORT ==================
 export default app;
