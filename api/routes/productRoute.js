@@ -1,12 +1,23 @@
 import express from "express";
-import {addProduct,listProducts,removeProduct,singleProduct} from "../controllers/productController.js";
+import {
+  addProduct,
+  listProducts,
+  removeProduct,
+  singleProduct,
+} from "../controllers/productController.js";
 import upload from "../middleware/multer.js";
 import adminAuth from "../middleware/adminAuth.js";
 
-
 const productRouter = express.Router();
 
-productRouter.post("/add",adminAuth,
+/* =========================
+   ADMIN ROUTES
+========================= */
+
+// ✅ ADD PRODUCT (ADMIN)
+productRouter.post(
+  "/add",
+  adminAuth,
   upload.fields([
     { name: "image1", maxCount: 1 },
     { name: "image2", maxCount: 1 },
@@ -15,11 +26,30 @@ productRouter.post("/add",adminAuth,
   ]),
   addProduct
 );
-productRouter.post("/remove",adminAuth,removeProduct);
-productRouter.post("/single", singleProduct);
+
+// ✅ DELETE PRODUCT (ADMIN)  ← FIXED
+productRouter.delete(
+  "/delete/:id",
+  adminAuth,
+  removeProduct
+);
+
+/* =========================
+   PUBLIC ROUTES
+========================= */
+
+// Get all products
 productRouter.get("/list", listProducts);
 
-// Root GET - return product list at /api/product
+// Get single product
+productRouter.post("/single", singleProduct);
+
+// Root fallback
 productRouter.get("/", listProducts);
+
+/* =========================
+   ❌ OLD ROUTE (REMOVE OR KEEP COMMENTED)
+========================= */
+// productRouter.post("/remove", adminAuth, removeProduct);
 
 export default productRouter;
