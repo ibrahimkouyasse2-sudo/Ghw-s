@@ -11,34 +11,32 @@ const Login = ({ setToken }) => {
     e.preventDefault();
 
     try {
-      // ✅ ADMIN USES SAME LOGIN ENDPOINT AS USER
       const response = await axios.post(
         `${backendUrl}/api/user/login`,
         { email, password }
       );
 
       if (response.data.success) {
-        // 🔐 Ensure only admin can log in
         if (response.data.role !== "admin") {
           toast.error("Access denied: not an admin");
           return;
         }
 
+        // ✅ SAVE ADMIN TOKEN PROPERLY
+        localStorage.setItem("adminToken", response.data.token);
         setToken(response.data.token);
+
         toast.success("Admin logged in successfully");
       } else {
-        toast.error(response.data.message || "Login failed");
+        toast.error(response.data.message);
       }
     } catch (error) {
-      console.error(error);
-      toast.error(
-        error.response?.data?.message || "Server error during login"
-      );
+      toast.error(error.response?.data?.message || "Login failed");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center w-full">
+     <div className="min-h-screen flex items-center justify-center w-full">
       <div className="bg-white shadow-md rounded-lg px-8 py-6 max-w-md">
         <h1 className="text-2xl font-semibold mb-4">Admin Panel</h1>
 
