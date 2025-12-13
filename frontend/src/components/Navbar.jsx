@@ -142,7 +142,7 @@ const Navbar = () => {
                         </NavLink>
                         <NavLink
                             onClick={() => setOpenModal(false)}
-                            to='/collections'
+                            to='//collection'
                             className='border py-2 pl-6'
                         >
                             COLLECTIONS
