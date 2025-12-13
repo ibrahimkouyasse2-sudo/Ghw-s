@@ -1,55 +1,9 @@
 import React, { useState } from "react";
 import { assets } from "../assets/assets";
-import adminAxios from "../utils/adminAxios";
+import adminAxios from "../utils/adminAxios"; // ✅ IMPORTANT
 import { toast } from "react-toastify";
 
-/* =========================
-   CATEGORY → SUBCATEGORY MAP
-========================= */
-const CATEGORY_SUBCATEGORIES = {
-  "Gaming PC": [
-    "PC Gamer Standard",
-    "PC Gamer Avancé",
-    "PC Gamer Ultra",
-    "POWERED BY MSI",
-  ],
-
-  "PC Portable": [
-    "PC Portables Gamer",
-    "PC Portables Multimédia",
-    "Zone Apple",
-  ],
-
-  Components: [
-    "Processeurs",
-    "Cartes mères",
-    "Refroidissement",
-    "Cartes graphiques",
-    "Mémoire vive PC",
-    "Disques durs et SSD",
-    "Alimentations PC",
-    "Boitiers PC",
-  ],
-
-  Peripherals: [
-    "Moniteurs",
-    "Câbles",
-    "Claviers",
-    "Souris",
-    "Kits claviers/souris",
-    "Casques",
-  ],
-
-  Chairs: [
-    "Chaise gamer",
-    "Chaise ergonomique",
-  ],
-};
-
 const Add = () => {
-  /* =========================
-     STATE
-  ========================= */
   const [image1, setImage1] = useState(null);
   const [image2, setImage2] = useState(null);
   const [image3, setImage3] = useState(null);
@@ -58,23 +12,13 @@ const Add = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
-
-  const [category, setCategory] = useState("Gaming PC");
-  const [subCategory, setSubcategory] = useState("");
-
+  const [category, setCategory] = useState("Computers");
+  const [subCategory, setSubcategory] = useState("Gaming PC");
   const [bestseller, setBestseller] = useState(false);
   const [sizes, setSizes] = useState([]);
 
-  /* =========================
-     SUBMIT
-  ========================= */
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-
-    if (!subCategory) {
-      toast.error("Please select a sub category");
-      return;
-    }
 
     try {
       const formData = new FormData();
@@ -92,6 +36,7 @@ const Add = () => {
       formData.append("bestseller", bestseller);
       formData.append("sizes", JSON.stringify(sizes));
 
+      // ✅ ADMIN AUTHORIZED REQUEST
       const response = await adminAxios.post(
         "/api/product/add",
         formData
@@ -104,8 +49,8 @@ const Add = () => {
         setName("");
         setDescription("");
         setPrice("");
-        setCategory("Gaming PC");
-        setSubcategory("");
+        setCategory("Computers");
+        setSubcategory("Gaming PC");
         setBestseller(false);
         setSizes([]);
         setImage1(null);
@@ -123,9 +68,6 @@ const Add = () => {
     }
   };
 
-  /* =========================
-     JSX
-  ========================= */
   return (
     <main>
       <form
@@ -159,73 +101,84 @@ const Add = () => {
         </div>
 
         {/* Name */}
-        <input
-          className="w-full max-w-[500px] px-3 py-2"
-          placeholder="Product Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
+        <div className="w-full">
+          <p className="mb-2 font-medium text-sm">Product Name</p>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full max-w-[500px] px-3 py-2"
+            required
+          />
+        </div>
 
         {/* Description */}
-        <textarea
-          className="w-full max-w-[500px] px-3 py-2"
-          placeholder="Product Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
+        <div className="w-full">
+          <p className="mb-2 font-medium text-sm">Product Description</p>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full max-w-[500px] px-3 py-2"
+            required
+          />
+        </div>
 
-        {/* Category + Subcategory */}
+        {/* Category */}
         <div className="flex gap-4">
           <select
             value={category}
-            onChange={(e) => {
-              setCategory(e.target.value);
-              setSubcategory(""); // ✅ reset subcategory
-            }}
+            onChange={(e) => setCategory(e.target.value)}
           >
+            
+            <option>Components</option>
+            <option>Peripherals</option>
+            <option>Chairs</option>
             <option value="Gaming PC">Gaming PC</option>
+            <option value="Full Setup">Full Setup</option>
             <option value="PC Portable">PC Portable</option>
-            <option value="Components">Components</option>
-            <option value="Peripherals">Peripherals</option>
-            <option value="Chairs">Chairs</option>
+
+
           </select>
 
           <select
             value={subCategory}
             onChange={(e) => setSubcategory(e.target.value)}
-            required
           >
-            <option value="">Select Sub Category</option>
-            {CATEGORY_SUBCATEGORIES[category]?.map((sub) => (
-              <option key={sub} value={sub}>
-                {sub}
-              </option>
-            ))}
+          <option value="">Select Sub Category</option>
+
+  
+  <option value="GPU">GPU</option>
+  <option value="CPU">CPU</option>
+  <option value="Monitor">Monitor</option>
+  <option value="Keyboard">Keyboard</option>
+  <option value="Mouse">Mouse</option>
+  <option value="Headsets">Headsets</option>
+  <option value="PC Cases">PC Cases</option>
+  <option value="Power Supplies">Power Supplies</option>
+  <option value="Hard Drives">Hard Drives</option>
+  <option value="RAM (PC Memory)">RAM (PC Memory)</option>
+  <option value="Cooling">Cooling</option>
+            
           </select>
         </div>
 
         {/* Price */}
         <input
           type="number"
-          min="1"
-          className="px-3 py-2"
-          placeholder="Price in DH"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
+          placeholder="Price in DH"
           required
         />
 
         {/* Bestseller */}
-        <label className="flex gap-2 items-center">
+        <div className="flex gap-2">
           <input
             type="checkbox"
             checked={bestseller}
             onChange={() => setBestseller(!bestseller)}
           />
-          Add to bestseller
-        </label>
+          <label>Add to bestseller</label>
+        </div>
 
         <button className="bg-black text-white px-4 py-2 rounded">
           Add Product
