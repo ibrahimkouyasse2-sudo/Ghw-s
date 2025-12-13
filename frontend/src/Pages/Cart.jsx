@@ -69,7 +69,9 @@ const Cart = () => {
                 }}
                 className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1'
                 type='number'
+                inputMode="numeric"
                 min={1}
+                max={3}
                 defaultValue={item.quantity}
               />
 
