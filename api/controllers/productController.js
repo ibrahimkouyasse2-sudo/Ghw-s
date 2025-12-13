@@ -1,90 +1,141 @@
 import { v2 as cloudinary } from "cloudinary";
 import productModel from "../models/productModel.js";
-// import createError from "http-errors";
-// import { successResponse } from "./response.controller.js";
 import mongoose from "mongoose";
 
-//add product
-const addProduct = async (req, res, next) => {
+/* ======================
+   ADD PRODUCT
+====================== */
+const addProduct = async (req, res) => {
   try {
-    const { name, description, price, category, subCategory, sizes, bestseller } = req.body;
-    const image1 = req.files.image1 && req.files.image1[0];
-    const image2 = req.files.image2 && req.files.image2[0];
-    const image3 = req.files.image3 && req.files.image3[0];
-    const image4 = req.files.image4 && req.files.image4[0];
+    const {
+      name,
+      description,
+      price,
+      category,
+      subCategory,
+      sizes,
+      bestseller,
+    } = req.body;
 
-    const images = [image1, image2, image3, image4].filter((img) => img !== undefined);
+    const images = [
+      req.files?.image1?.[0],
+      req.files?.image2?.[0],
+      req.files?.image3?.[0],
+      req.files?.image4?.[0],
+    ].filter(Boolean);
 
-    let imagesURL = await Promise.all(
+    const imagesURL = await Promise.all(
       images.map(async (img) => {
-        let result = await cloudinary.uploader.upload(img.path, {
+        const result = await cloudinary.uploader.upload(img.path, {
           resource_type: "image",
         });
-
         return result.secure_url;
       })
     );
 
-    const productData = {
+    const product = new productModel({
       name,
       description,
       price: Number(price),
       category,
       subCategory,
-      sizes: JSON.parse(sizes),
-      bestseller: bestseller === "true" ? true : false,
+      sizes: sizes ? JSON.parse(sizes) : [],
+      bestseller: bestseller === "true",
       image: imagesURL,
       date: Date.now(),
-    };
-    console.log(productData)
-    const product = new productModel(productData);
+    });
+
     await product.save();
 
-    res.json({success:true , message:"Product added"})
-
+    res.json({ success: true, message: "Product added" });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message })
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-//list all product
-const listProducts = async (req, res, next) => {
+/* ======================
+   LIST PRODUCTS
+====================== */
+const listProducts = async (req, res) => {
   try {
     const products = await productModel.find({});
-    res.json({success:true , products})
-
+    res.json({ success: true, products });
   } catch (error) {
-    console.log(error);
-   res.json({success:false , message: error.message})
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-//remove product
-const removeProduct = async (req, res, next) => {
+/* ======================
+   DELETE PRODUCT (FIXED 🔥)
+====================== */
+const removeProduct = async (req, res) => {
   try {
-     await productModel.findOneAndDelete(req.body.id);
-     res.json({success:true, message:"Product Deleted"})
+    const { id } = req.params;
 
+    // ✅ Validate ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid product ID",
+      });
+    }
+
+    const product = await productModel.findById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // 🔥 OPTIONAL: delete images from Cloudinary
+    // (skip if you don’t store public_id)
+    // for (const img of product.image) {
+    //   const publicId = img.split("/").pop().split(".")[0];
+    //   await cloudinary.uploader.destroy(publicId);
+    // }
+
+    await productModel.findByIdAndDelete(id);
+
+    res.json({
+      success: true,
+      message: "Product deleted successfully",
+    });
   } catch (error) {
-    console.log(error);
-   res.json({success:false , message: error.message})
+    console.error("Delete error:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-
-//get single product
-const singleProduct = async (req, res, next) => {
+/* ======================
+   SINGLE PRODUCT
+====================== */
+const singleProduct = async (req, res) => {
   try {
     const { productId } = req.body;
-    const product = await productModel.findById(productId);
-    res.json({success:true,product})
 
+    const product = await productModel.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.json({ success: true, product });
   } catch (error) {
-   console.log(error);
-   res.json({success:false , message: error.message})
-   
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
-export { addProduct, listProducts, removeProduct, singleProduct };
+export {
+  addProduct,
+  listProducts,
+  removeProduct,
+  singleProduct,
+};

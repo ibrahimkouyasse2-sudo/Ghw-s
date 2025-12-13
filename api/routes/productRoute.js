@@ -14,7 +14,7 @@ const productRouter = express.Router();
    ADMIN ROUTES
 ========================= */
 
-// ✅ ADD PRODUCT (ADMIN)
+// ADD PRODUCT
 productRouter.post(
   "/add",
   adminAuth,
@@ -27,7 +27,7 @@ productRouter.post(
   addProduct
 );
 
-// ✅ DELETE PRODUCT (ADMIN)  ← FIXED
+// 🔥 DELETE PRODUCT (CORRECT)
 productRouter.delete(
   "/delete/:id",
   adminAuth,
@@ -38,18 +38,8 @@ productRouter.delete(
    PUBLIC ROUTES
 ========================= */
 
-// Get all products
 productRouter.get("/list", listProducts);
-
-// Get single product
 productRouter.post("/single", singleProduct);
-
-// Root fallback
 productRouter.get("/", listProducts);
-
-/* =========================
-   ❌ OLD ROUTE (REMOVE OR KEEP COMMENTED)
-========================= */
-// productRouter.post("/remove", adminAuth, removeProduct);
 
 export default productRouter;
